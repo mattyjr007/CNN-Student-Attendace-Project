@@ -4,6 +4,12 @@ from tensorflow.keras.preprocessing import image
 import numpy as np
 from PIL import Image
 import pickle
+import pandas as pd
+import time
+import datetime
+# Get the current date
+current_date = datetime.date.today()
+
 
 st.set_page_config(page_title="Attendace App", page_icon="😍")
 
@@ -40,15 +46,34 @@ def take_attendance(img,msg):
 
 header = st.container()
 
+data = pd.read_csv('attendance.csv')
 
 with header:
     st.title("CNN: Attendance Capture System")
 
 
     student_image = st.camera_input("Input Student Image")
+    st.write("")
+    name = st.text_input("Please Enter Student Name.")
     msg = st.empty()
 
     if student_image is not None:
-        # To read image file buffer as a PIL Image:
-        img = Image.open(student_image)
-        matricn = take_attendance(student_image,msg)
+        if name.strip() == "":
+            msg.warning("Please enter a name")
+        else:
+            # To read image file buffer as a PIL Image:
+            img = Image.open(student_image)
+            matricn = take_attendance(student_image,msg)
+
+            if matricn != -1:
+                data = pd.concat([data, pd.DataFrame.from_records([{'Name':name,'Matric_No':matricn,'Time':current_date}])])
+                data.drop_duplicates(inplace=True,keep=False)
+                data.to_csv("attendance.csv",index=False)
+
+data_container = st.container()
+
+with data_container:
+    data = pd.read_csv('attendance.csv')
+    data.drop_duplicates(inplace=True)
+    st.header("Student Attendance")
+    st.dataframe(data.astype(str),use_container_width=True)
