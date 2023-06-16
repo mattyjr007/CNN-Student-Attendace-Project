@@ -25,7 +25,7 @@ def take_attendance(img,msg):
     pred_probabilities = myModel.predict(newImg)
 
     print(pred_probabilities)
-    predictions = pred_probabilities > 0.7
+    predictions = pred_probabilities > 0.8
     print(predictions)
     prediction = [i for i, x in enumerate(predictions[0]) if x]
     #print(prediction)
