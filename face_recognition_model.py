@@ -54,28 +54,29 @@ model = Sequential()
 dimension = (256, 256, 3)
 
 # CONVOLUTIONAL LAYER 1
+# CONVOLUTIONAL LAYER 1
 model.add(Conv2D( filters=64, kernel_size=(4, 4), input_shape=dimension, activation='relu'))
 # POOLING LAYER
-model.add(MaxPool2D(pool_size=(2,2)))
-model.add(Dropout(0.2))
+model.add(MaxPool2D(pool_size=(3,3)))
+# model.add(Dropout(0.3))
 
 # CONVOLUTIONAL LAYER 1
-model.add(Conv2D( filters=256, kernel_size=(4, 4), activation='relu'))
+model.add(Conv2D( filters=64, kernel_size=(4, 4), activation='relu'))
 # POOLING LAYER
-model.add(MaxPool2D(pool_size=(4,4)))
-model.add(Dropout(0.2))
+model.add(MaxPool2D(pool_size=(3,3)))
+model.add(Dropout(0.3))
 
 
 #CONVOLUTIONAL LAYER 2
 model.add(Conv2D(filters=128, kernel_size=(4,4), activation='relu'))
 #POOLING LAYER 2
-model.add(MaxPool2D(pool_size=(2,2)))
-
-
-#CONVOLUTIONAL LAYER 2
-model.add(Conv2D(filters=256, kernel_size=(4,4), activation='relu'))
-#POOLING LAYER 2
 model.add(MaxPool2D(pool_size=(3,3)))
+
+
+# #CONVOLUTIONAL LAYER 2
+# model.add(Conv2D(filters=256, kernel_size=(4,4), activation='relu'))
+# #POOLING LAYER 2
+# model.add(MaxPool2D(pool_size=(3,3)))
 
 
 # FLATTEN IMAGES FROM 224 by 224 * 3 BEFORE FINAL LAYER
@@ -83,7 +84,7 @@ model.add(Flatten())
 
 # 128 NEURONS IN DENSE HIDDEN LAYER
 model.add(Dense(128, activation='relu'))
-model.add(Dropout(0.2))
+model.add(Dropout(0.3))
 
 # LAST LAYER IS THE CLASSIFIER
 model.add(Dense(train_set_length, activation='softmax'))

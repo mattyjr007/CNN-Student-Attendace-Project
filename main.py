@@ -65,7 +65,7 @@ with header:
             img = Image.open(student_image)
             matricn = take_attendance(student_image,msg)
 
-            if matricn != -1:
+            if matricn is not None:
                 data = pd.concat([data, pd.DataFrame.from_records([{'Name':name,'Matric_No':matricn,'Time':current_date}])])
                 data.drop_duplicates(inplace=True,keep=False)
                 data.to_csv("attendance.csv",index=False)
@@ -75,5 +75,8 @@ data_container = st.container()
 with data_container:
     data = pd.read_csv('attendance.csv')
     data.drop_duplicates(inplace=True)
+    data.to_csv('attendance.csv',index=False)
+
     st.header("Student Attendance")
     st.dataframe(data.astype(str),use_container_width=True)
+
