@@ -13,6 +13,12 @@ current_date = datetime.date.today()
 
 st.set_page_config(page_title="Attendace App", page_icon="😍")
 
+@st.cache_data
+def convert_df(df):
+    # IMPORTANT: Cache the conversion to prevent computation on every rerun
+    return df.to_csv().encode('utf-8')
+
+
 
 def convertImgToArray(img):
     myImage =img
@@ -40,7 +46,7 @@ def take_attendance(img,msg):
         msg.success(f"Attendance for {matric} Taken Successfully!!")
         return matric
     else:
-        msg.error("Student matriculation number not found in database!!")
+        #msg.error("Student matriculation number not found in database!!")
         return None
 
 
@@ -49,26 +55,26 @@ header = st.container()
 data = pd.read_csv('attendance.csv')
 
 with header:
-    st.title("CNN: Attendance Capture System")
+    st.title("CNN: Attendance Management System")
 
 
     student_image = st.camera_input("Input Student Image")
     st.write("")
-    name = st.text_input("Please Enter Student Name.")
+    #name = st.text_input("Please Enter Student Name.")
     msg = st.empty()
 
     if student_image is not None:
-        if name.strip() == "":
-            msg.warning("Please enter a name")
-        else:
+        #if name.strip() == "":
+            #msg.warning("Please enter a name")
+        #else:
             # To read image file buffer as a PIL Image:
-            img = Image.open(student_image)
-            matricn = take_attendance(student_image,msg)
+        img = Image.open(student_image)
+        matricn = take_attendance(student_image,msg)
 
-            if matricn is not None:
-                data = pd.concat([data, pd.DataFrame.from_records([{'Name':name,'Matric_No':matricn,'Time':current_date}])])
-                data.drop_duplicates(inplace=True,keep=False)
-                data.to_csv("attendance.csv",index=False)
+        if matricn is not None:
+            data = pd.concat([data, pd.DataFrame.from_records([{'Matric_No':matricn,'Time':current_date}])])
+            data.drop_duplicates(inplace=True,keep=False)
+            data.to_csv("attendance.csv",index=False)
 
 data_container = st.container()
 
@@ -79,4 +85,13 @@ with data_container:
 
     st.header("Student Attendance")
     st.dataframe(data.astype(str),use_container_width=True)
+
+    csv = convert_df(data)
+
+    st.download_button(
+        label="Download data as CSV",
+        data=csv,
+        file_name='attendance.csv',
+        mime='text/csv',
+    )
 
